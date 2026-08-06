@@ -8,9 +8,19 @@ const ProdutoModel = {
 
     // 2.Função que adiciona um produto
     adicionar: (produto, callback) => {
-        const sql = 'INSERT INTO produtos (nome, categoria, quantidade, status_estoque, numeracao) VALUES (?, ?, ?, ?, ?)';
-        const valores = [produto.nome, produto.categoria, produto.quantidade, produto.status_estoque, produto.numeracao];
-        
+        const sql = 'INSERT INTO produtos (nome, categoria, subcategoria, quantidade, status_estoque, numeracao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        const valores = [
+            produto.nome, 
+            produto.categoria, 
+            produto.subcategoria, 
+            produto.quantidade, 
+            produto.status_estoque, 
+            produto.numeracao, 
+            produto.marca, 
+            produto.cor, 
+            produto.descricao
+        ];
+
         // db.run usado para modificar o banco (inserir, atualizar, apagar)
         db.run(sql, valores, callback);
     },
@@ -26,10 +36,19 @@ const ProdutoModel = {
             valor = '%' + termo + '%'; // O % permite achar palavras parecidas
         } else if (tipo === 'categoria') {
             sql = 'SELECT * FROM produtos WHERE categoria LIKE ?';
-            valor = '%' + termo + '%';
+            valor = '%' + termo + '%'; //  Pesquisa por categoria
+        } else if (tipo === 'subcategoria') {
+            sql = 'SELECT * FROM produtos WHERE subcategoria LIKE ?'; 
+            valor = '%' + termo + '%'; // Pesquisa por subcategoria
         } else if (tipo === 'numeracao') {
             sql = 'SELECT * FROM produtos WHERE numeracao = ?';
             valor = termo; // Numeração precisa ser exata (ex: 41)
+        } else if (tipo === 'marca') { //  Pesquisa por marca
+            sql = 'SELECT * FROM produtos WHERE marca LIKE ?';
+            valor = '%' + termo + '%';
+        } else if (tipo === 'cor') { // Pesquisa por cor
+            sql = 'SELECT * FROM produtos WHERE cor LIKE ?';
+            valor = '%' + termo + '%';
         }
 
         db.all(sql, [valor], callback);
